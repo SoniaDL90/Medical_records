@@ -13,8 +13,8 @@ Práctica de seguridad en Symfony 7 - Sistema hospitalario con control de acceso
 
 ### 1. Clonar el repositorio
 ```bash
-git clone <url-del-repositorio>
-cd medical-records
+git clone https://github.com/SoniaDL90/Medical_records.git
+cd Medical_records
 ```
 
 ### 2. Instalar dependencias
@@ -52,12 +52,12 @@ symfony server:start
 
 ## Usuarios de prueba
 
-| Email | Contraseña | Rol |
-|-------|-----------|-----|
-| admin@hospital.com | Password123! | ROLE_ADMIN |
-| doctor@hospital.com | Password123! | ROLE_DOCTOR |
-| nurse@hospital.com | Password123! | ROLE_NURSE |
-| reception@hospital.com | Password123! | ROLE_RECEPTIONIST |
+| Email | Contraseña | Rol | Permisos |
+|-------|-----------|-----|---------|
+| admin@hospital.com | Password123! | ROLE_ADMIN | Leer, editar y eliminar todos los registros |
+| doctor@hospital.com | Password123! | ROLE_DOCTOR | Leer y editar sus propios pacientes |
+| nurse@hospital.com | Password123! | ROLE_NURSE | Leer todos los registros, editar limitado |
+| reception@hospital.com | Password123! | ROLE_RECEPTIONIST | Solo datos básicos del paciente |
 
 ## URLs principales
 
@@ -85,9 +85,10 @@ curl http://127.0.0.1:8000/api/medical-records/ \
 ## Decisiones de seguridad
 
 - **RBAC**: Sistema de roles jerárquico (ADMIN > DOCTOR > NURSE > RECEPTIONIST)
-- **Voter**: Control granular de acceso a registros individuales
-- **JWT**: Autenticación stateless para la API REST
+- **Voter**: Control granular de acceso a registros individuales por rol
+- **JWT**: Autenticación stateless para la API REST (token válido 1 hora)
 - **Rate Limiting**: Máximo 5 intentos de login cada 15 minutos
-- **Auditoría**: Todos los accesos quedan registrados en la base de datos
+- **Auditoría**: Todos los accesos quedan registrados en la base de datos con IP, usuario y timestamp
 - **CSRF**: Protección en formularios de edición y borrado
-- **Bloqueo**: Cuenta bloqueada tras 5 intentos fallidos
+- **Bloqueo**: Cuenta bloqueada tras 5 intentos fallidos consecutivos
+- **Accesos sospechosos**: Panel de monitorización de accesos fallidos últimas 24h
