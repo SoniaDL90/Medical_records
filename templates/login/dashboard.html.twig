@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Medical Records</title>
+</head>
+<body>
+    <h1>Bienvenido, {{ app.user.name }}!</h1>
+    <p>Tu rol: {{ app.user.roles|join(', ') }}</p>
+
+    <nav>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="#">Panel Admin</a> |
+        {% endif %}
+        {% if is_granted('ROLE_DOCTOR') %}
+            <a href="#">Mis Pacientes</a> |
+        {% endif %}
+        <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Médico</title>
+</head>
+<body>
+    <h1>Registro Médico #{{ record.id }}</h1>
+
+    <p><strong>Paciente:</strong> {{ record.patient.firstName }} {{ record.patient.lastName }}</p>
+    <p><strong>Doctor:</strong> {{ record.doctor.name }}</p>
+    <p><strong>Diagnóstico:</strong> {{ record.diagnosis }}</p>
+    <p><strong>Tratamiento:</strong> {{ record.treatment ?? 'No especificado' }}</p>
+    <p><strong>Fecha:</strong> {{ record.createdAt|date('d/m/Y H:i') }}</p>
+
+    {% if is_granted('MEDICAL_RECORD_EDIT', record) %}
+        <a href="{{ path('medical_record_edit', {id: record.id}) }}">Editar</a>
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <form method="post" action="{{ path('medical_record_delete', {id: record.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ record.id) }}">
+            <button type="submit" onclick="return confirm('¿Seguro?')">Eliminar</button>
+        </form>
+    {% endif %}
+
+    <a href="{{ path('medical_record_index') }}">Volver</a>
+</body>
+</html>

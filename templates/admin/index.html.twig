@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin</title>
+</head>
+<body>
+    <h1>Panel de Administración</h1>
+
+    <nav>
+        <a href="{{ path('app_dashboard') }}">Dashboard</a> |
+        <a href="{{ path('admin_logs') }}">Ver Logs de Auditoría</a> |
+        <a href="{{ path('medical_record_index') }}">Registros Médicos</a> |
+        <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
+    </nav>
+
+    <h2>Resumen</h2>
+    <p>Bienvenido al panel de administración.</p>
+    <p>Desde aquí puedes gestionar los logs de auditoría y los registros médicos.</p>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Logs de Auditoría</title>
+</head>
+<body>
+    <h1>Logs de Auditoría</h1>
+    <a href="{{ path('admin_index') }}">Volver</a>
+
+    <h2>Filtros</h2>
+    <form method="get">
+        <label>Acción:
+            <select name="action">
+                <option value="">Todas</option>
+                <option value="LOGIN_SUCCESS" {% if selectedAction == 'LOGIN_SUCCESS' %}selected{% endif %}>Login OK</option>
+                <option value="LOGIN_FAILED" {% if selectedAction == 'LOGIN_FAILED' %}selected{% endif %}>Login Fallido</option>
+                <option value="MEDICAL_RECORD_READ" {% if selectedAction == 'MEDICAL_RECORD_READ' %}selected{% endif %}>Lectura</option>
+                <option value="MEDICAL_RECORD_EDIT" {% if selectedAction == 'MEDICAL_RECORD_EDIT' %}selected{% endif %}>Edición</option>
+                <option value="MEDICAL_RECORD_DELETE" {% if selectedAction == 'MEDICAL_RECORD_DELETE' %}selected{% endif %}>Eliminación</option>
+            </select>
+        </label>
+        <label>Resultado:
+            <select name="success">
+                <option value="">Todos</option>
+                <option value="1" {% if selectedSuccess == '1' %}selected{% endif %}>Exitoso</option>
+                <option value="0" {% if selectedSuccess == '0' %}selected{% endif %}>Denegado</option>
+            </select>
+        </label>
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <h2>Últimos 100 accesos</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Acción</th>
+                <th>Recurso</th>
+                <th>ID</th>
+                <th>IP</th>
+                <th>Resultado</th>
+                <th>Detalles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr style="background: {{ log.success ? '#dfffdf' : '#ffdada' }}">
+                <td>{{ log.createdAt|date('d/m/Y H:i:s') }}</td>
+                <td>{{ log.user ? log.user.email : 'Anónimo' }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.resource }}</td>
+                <td>{{ log.resourceId ?? '-' }}</td>
+                <td>{{ log.ipAddress }}</td>
+                <td>{{ log.success ? '✅' : '❌' }}</td>
+                <td>{{ log.details ?? '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Accesos fallidos últimas 24h</h2>
+    <p>Total: {{ failedLogs|length }}</p>
+</body>
+</html>

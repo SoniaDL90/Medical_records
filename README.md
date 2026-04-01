@@ -1,0 +1,93 @@
+# Sistema de Gestión de Registros Médicos
+
+Práctica de seguridad en Symfony 7 - Sistema hospitalario con control de acceso, roles y auditoría.
+
+## Requisitos
+
+- PHP 8.2+
+- Composer 2.x
+- Symfony CLI
+- MySQL 8.0+
+
+## Instalación
+
+### 1. Clonar el repositorio
+```bash
+git clone <url-del-repositorio>
+cd medical-records
+```
+
+### 2. Instalar dependencias
+```bash
+composer install
+```
+
+### 3. Configurar base de datos
+
+Editar el archivo `.env` con tus credenciales:
+```
+DATABASE_URL="mysql://usuario:contraseña@127.0.0.1:3306/medical_records"
+```
+
+### 4. Crear la base de datos y ejecutar migraciones
+```bash
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
+```
+
+### 5. Cargar usuarios de prueba
+```bash
+php bin/console doctrine:fixtures:load
+```
+
+### 6. Generar claves JWT
+```bash
+php bin/console lexik:jwt:generate-keypair
+```
+
+### 7. Arrancar el servidor
+```bash
+symfony server:start
+```
+
+## Usuarios de prueba
+
+| Email | Contraseña | Rol |
+|-------|-----------|-----|
+| admin@hospital.com | Password123! | ROLE_ADMIN |
+| doctor@hospital.com | Password123! | ROLE_DOCTOR |
+| nurse@hospital.com | Password123! | ROLE_NURSE |
+| reception@hospital.com | Password123! | ROLE_RECEPTIONIST |
+
+## URLs principales
+
+- Login web: http://127.0.0.1:8000/login
+- Panel admin: http://127.0.0.1:8000/admin
+- Logs de auditoría: http://127.0.0.1:8000/admin/logs
+- API login: POST http://127.0.0.1:8000/api/login
+- API registros: GET http://127.0.0.1:8000/api/medical-records/
+
+## API REST con JWT
+
+### Obtener token
+```bash
+curl -X POST http://127.0.0.1:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin@hospital.com","password":"Password123!"}'
+```
+
+### Usar el token
+```bash
+curl http://127.0.0.1:8000/api/medical-records/ \
+  -H "Authorization: Bearer <token>"
+```
+
+## Decisiones de seguridad
+
+- **RBAC**: Sistema de roles jerárquico (ADMIN > DOCTOR > NURSE > RECEPTIONIST)
+- **Voter**: Control granular de acceso a registros individuales
+- **JWT**: Autenticación stateless para la API REST
+- **Rate Limiting**: Máximo 5 intentos de login cada 15 minutos
+- **Auditoría**: Todos los accesos quedan registrados en la base de datos
+- **CSRF**: Protección en formularios de edición y borrado
+- **Bloqueo**: Cuenta bloqueada tras 5 intentos fallidos

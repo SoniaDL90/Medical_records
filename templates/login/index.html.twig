@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Medical Records</title>
+</head>
+<body>
+    <h1>Iniciar Sesión</h1>
+
+    {% if error %}
+        <div style="color:red">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <form action="{{ path('app_login') }}" method="post">
+        <label>Email:
+            <input type="email" name="_username" value="{{ last_username }}">
+        </label>
+        <label>Contraseña:
+            <input type="password" name="_password">
+        </label>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <button type="submit">Entrar</button>
+    </form>
+</body>
+</html>
