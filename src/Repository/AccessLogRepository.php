@@ -1,43 +1,62 @@
 <?php
-
 namespace App\Repository;
-
 use App\Entity\AccessLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
-/**
- * @extends ServiceEntityRepository<AccessLog>
- */
 class AccessLogRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, AccessLog::class);
     }
-
-    //    /**
-    //     * @return AccessLog[] Returns an array of AccessLog objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?AccessLog
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findWithFilters(?string $action, ?string $success, ?string $user, ?string $dateFrom, ?string $dateTo): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.User', 'u')
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(100);
+        if ($action) {
+            $qb->andWhere('a.action = :action')
+               ->setParameter('action', $action);
+        }
+        if ($success !== '' && $success !== null) {
+            $qb->andWhere('a.success = :success')
+               ->setParameter('success', (bool)$success);
+        }
+        if ($user) {
+            $qb->andWhere('u.email LIKE :user')
+               ->setParameter('user', '%' . $user . '%');
+        }
+        if ($dateFrom) {
+            $qb->andWhere('a.createdAt >= :dateFrom')
+               ->setParameter('dateFrom', new \DateTime($dateFrom . ' 00:00:00'));
+        }
+        if ($dateTo) {
+            $qb->andWhere('a.createdAt <= :dateTo')
+               ->setParameter('dateTo', new \DateTime($dateTo . ' 23:59:59'));
+        }
+        return $qb->getQuery()->getResult();
+    }
+    public function countFailedLoginsLast24h(): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.action = :action')
+            ->andWhere('a.createdAt >= :since')
+            ->setParameter('action', 'LOGIN_FAILED')
+            ->setParameter('since', new \DateTime('-24 hours'))
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    public function findSuspiciousLast24h(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.User', 'u')
+            ->where('a.success = false')
+            ->andWhere('a.createdAt >= :since')
+            ->setParameter('since', new \DateTime('-24 hours'))
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

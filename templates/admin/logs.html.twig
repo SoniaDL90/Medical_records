@@ -1,66 +1,246 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Logs de Auditoría</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedRecord — Logs de Auditoría</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--navy:#0a1628;--teal:#0d9488;--teal-light:#14b8a6;--blue:#1d4ed8;--gray:#94a3b8;--gray-light:#e2e8f0;--sidebar-w:260px}
+        body{font-family:'DM Sans',sans-serif;background:#f1f5f9;min-height:100vh;display:flex}
+        .sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0}
+        .sidebar-logo{padding:1.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:.875rem}
+        .logo-box{width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center}
+        .logo-box svg{width:22px;height:22px;fill:white}
+        .logo-text{font-family:'DM Serif Display',serif;font-size:1.3rem;color:white}
+        .logo-text span{color:var(--teal-light)}
+        .nav{flex:1;padding:1rem .75rem}
+        .nav-label{color:var(--gray);font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:.5rem .75rem;margin-top:.5rem}
+        .nav-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .875rem;border-radius:8px;color:var(--gray);text-decoration:none;font-size:.875rem;transition:all .2s;margin-bottom:2px}
+        .nav-item:hover{background:rgba(255,255,255,0.06);color:white}
+        .nav-item.active{background:rgba(13,148,136,0.15);color:var(--teal-light)}
+        .nav-item svg{width:18px;height:18px;flex-shrink:0}
+        .nav-logout{padding:1rem .75rem;border-top:1px solid rgba(255,255,255,0.06)}
+        .btn-logout{display:flex;align-items:center;gap:.75rem;width:100%;padding:.7rem .875rem;border-radius:8px;color:#f87171;text-decoration:none;font-size:.875rem;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+        .btn-logout:hover{background:rgba(239,68,68,0.1)}
+        .btn-logout svg{width:18px;height:18px}
+        .main{margin-left:var(--sidebar-w);flex:1;padding:2rem}
+        .page-header{margin-bottom:2rem}
+        .page-header h1{font-family:'DM Serif Display',serif;font-size:1.875rem;color:var(--navy)}
+        .page-header p{color:var(--gray);font-size:.9rem;margin-top:.25rem}
+        .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+        .stat-card{background:white;border-radius:14px;padding:1.25rem 1.5rem;border:1px solid var(--gray-light);display:flex;align-items:center;gap:1rem}
+        .stat-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .stat-icon svg{width:22px;height:22px}
+        .stat-icon.teal{background:#f0fdfa;color:var(--teal)}
+        .stat-icon.red{background:#fef2f2;color:#ef4444}
+        .stat-icon.blue{background:#eff6ff;color:var(--blue)}
+        .stat-value{font-size:1.5rem;font-weight:600;color:var(--navy);line-height:1}
+        .stat-label{color:var(--gray);font-size:.78rem;margin-top:2px}
+        .filter-bar{background:white;border-radius:14px;padding:1.25rem 1.5rem;border:1px solid var(--gray-light);margin-bottom:1.5rem}
+        .filter-bar form{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+        .filter-bar label{font-size:.8rem;font-weight:600;color:var(--navy);white-space:nowrap}
+        .filter-bar select,.filter-bar input[type=text],.filter-bar input[type=date]{padding:.5rem .875rem;border:1.5px solid var(--gray-light);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.875rem;color:var(--navy);outline:none;background:white}
+        .filter-bar select:focus,.filter-bar input:focus{border-color:var(--teal)}
+        .btn-filter{padding:.5rem 1.25rem;background:linear-gradient(135deg,var(--teal),var(--blue));color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;cursor:pointer}
+        .btn-clear{padding:.5rem 1rem;color:var(--gray);font-size:.875rem;text-decoration:none;border:1.5px solid var(--gray-light);border-radius:8px}
+        .table-card{background:white;border-radius:16px;border:1px solid var(--gray-light);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+        .table-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--gray-light);display:flex;align-items:center;justify-content:space-between}
+        .table-header h3{font-size:1rem;font-weight:600;color:var(--navy)}
+        .table-header span{font-size:.8rem;color:var(--gray)}
+        table{width:100%;border-collapse:collapse}
+        thead{background:#f8fafc;border-bottom:1px solid var(--gray-light)}
+        th{padding:.875rem 1.25rem;text-align:left;font-size:.72rem;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.08em}
+        td{padding:.875rem 1.25rem;font-size:.85rem;color:#334155;border-bottom:1px solid #f1f5f9}
+        tr:last-child td{border-bottom:none}
+        tr:hover td{background:#f8fafc}
+        .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .625rem;border-radius:20px;font-size:.72rem;font-weight:600}
+        .badge.success{background:#f0fdfa;color:#0f766e}
+        .badge.error{background:#fef2f2;color:#b91c1c}
+        .badge.action{background:#eff6ff;color:#1d4ed8}
+        .badge.denied{background:#fff7ed;color:#c2410c}
+        .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+        .suspicious-section{background:white;border-radius:16px;border:1px solid #fecaca;overflow:hidden;margin-top:1.5rem}
+        .suspicious-header{padding:1.25rem 1.5rem;border-bottom:1px solid #fecaca;background:#fef2f2;display:flex;align-items:center;gap:.75rem}
+        .suspicious-header h3{font-size:1rem;font-weight:600;color:#991b1b}
+        .suspicious-header svg{width:20px;height:20px;color:#ef4444}
+    </style>
 </head>
 <body>
-    <h1>Logs de Auditoría</h1>
-    <a href="{{ path('admin_index') }}">Volver</a>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-box">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+            </div>
+            <span class="logo-text">Med<span>Record</span></span>
+        </div>
+        <nav class="nav">
+            <div class="nav-label">Principal</div>
+            <a href="{{ path('app_dashboard') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                Dashboard
+            </a>
+            <a href="{{ path('medical_record_index') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
+                Registros Médicos
+            </a>
+            <div class="nav-label">Administración</div>
+            <a href="{{ path('admin_index') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
+                Panel Admin
+            </a>
+            <a href="{{ path('admin_logs') }}" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                Logs de Auditoría
+            </a>
+        </nav>
+        <div class="nav-logout">
+            <a href="{{ path('app_logout') }}" class="btn-logout">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4a2 2 0 00-2 2v14a2 2 0 002 2h8v-2H4V5z"/></svg>
+                Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+    <main class="main">
+        <div class="page-header">
+            <h1>Logs de Auditoría</h1>
+            <p>Registro completo de accesos y actividad del sistema</p>
+        </div>
 
-    <h2>Filtros</h2>
-    <form method="get">
-        <label>Acción:
-            <select name="action">
-                <option value="">Todas</option>
-                <option value="LOGIN_SUCCESS" {% if selectedAction == 'LOGIN_SUCCESS' %}selected{% endif %}>Login OK</option>
-                <option value="LOGIN_FAILED" {% if selectedAction == 'LOGIN_FAILED' %}selected{% endif %}>Login Fallido</option>
-                <option value="MEDICAL_RECORD_READ" {% if selectedAction == 'MEDICAL_RECORD_READ' %}selected{% endif %}>Lectura</option>
-                <option value="MEDICAL_RECORD_EDIT" {% if selectedAction == 'MEDICAL_RECORD_EDIT' %}selected{% endif %}>Edición</option>
-                <option value="MEDICAL_RECORD_DELETE" {% if selectedAction == 'MEDICAL_RECORD_DELETE' %}selected{% endif %}>Eliminación</option>
-            </select>
-        </label>
-        <label>Resultado:
-            <select name="success">
-                <option value="">Todos</option>
-                <option value="1" {% if selectedSuccess == '1' %}selected{% endif %}>Exitoso</option>
-                <option value="0" {% if selectedSuccess == '0' %}selected{% endif %}>Denegado</option>
-            </select>
-        </label>
-        <button type="submit">Filtrar</button>
-    </form>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon teal">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                </div>
+                <div>
+                    <div class="stat-value">{{ logs|length }}</div>
+                    <div class="stat-label">Total accesos</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <div>
+                    <div class="stat-value">{{ failedLogins }}</div>
+                    <div class="stat-label">Fallos últimas 24h</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
+                </div>
+                <div>
+                    <div class="stat-value">{{ suspicious|length }}</div>
+                    <div class="stat-label">Accesos sospechosos 24h</div>
+                </div>
+            </div>
+        </div>
 
-    <h2>Últimos 100 accesos</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Usuario</th>
-                <th>Acción</th>
-                <th>Recurso</th>
-                <th>ID</th>
-                <th>IP</th>
-                <th>Resultado</th>
-                <th>Detalles</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in logs %}
-            <tr style="background: {{ log.success ? '#dfffdf' : '#ffdada' }}">
-                <td>{{ log.createdAt|date('d/m/Y H:i:s') }}</td>
-                <td>{{ log.user ? log.user.email : 'Anónimo' }}</td>
-                <td>{{ log.action }}</td>
-                <td>{{ log.resource }}</td>
-                <td>{{ log.resourceId ?? '-' }}</td>
-                <td>{{ log.ipAddress }}</td>
-                <td>{{ log.success ? '✅' : '❌' }}</td>
-                <td>{{ log.details ?? '-' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="filter-bar">
+            <form method="GET">
+                <label>Acción:</label>
+                <select name="action">
+                    <option value="">Todas</option>
+                    <option value="LOGIN_SUCCESS" {% if app.request.get('action') == 'LOGIN_SUCCESS' %}selected{% endif %}>Login exitoso</option>
+                    <option value="LOGIN_FAILED" {% if app.request.get('action') == 'LOGIN_FAILED' %}selected{% endif %}>Login fallido</option>
+                    <option value="API_READ" {% if app.request.get('action') == 'API_READ' %}selected{% endif %}>API Read</option>
+                    <option value="ACCESS_DENIED" {% if app.request.get('action') == 'ACCESS_DENIED' %}selected{% endif %}>Acceso denegado</option>
+                </select>
+                <label>Resultado:</label>
+                <select name="success">
+                    <option value="">Todos</option>
+                    <option value="1" {% if app.request.get('success') == '1' %}selected{% endif %}>Exitoso</option>
+                    <option value="0" {% if app.request.get('success') == '0' %}selected{% endif %}>Fallido</option>
+                </select>
+                <label>Usuario:</label>
+                <input type="text" name="user" value="{{ app.request.get('user') }}" placeholder="email...">
+                <label>Desde:</label>
+                <input type="date" name="date_from" value="{{ app.request.get('date_from') }}">
+                <label>Hasta:</label>
+                <input type="date" name="date_to" value="{{ app.request.get('date_to') }}">
+                <button type="submit" class="btn-filter">Filtrar</button>
+                <a href="{{ path('admin_logs') }}" class="btn-clear">Limpiar</a>
+            </form>
+        </div>
 
-    <h2>Accesos fallidos últimas 24h</h2>
-    <p>Total: {{ failedLogs|length }}</p>
+        <div class="table-card">
+            <div class="table-header">
+                <h3>Últimos 100 accesos</h3>
+                <span>{{ logs|length }} registros</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>Recurso</th>
+                        <th>IP</th>
+                        <th>Resultado</th>
+                        <th>Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td>{{ log.createdAt|date('d/m/Y H:i:s') }}</td>
+                        <td>{{ log.user ? log.user.email : '—' }}</td>
+                        <td>
+                            {% if log.action == 'ACCESS_DENIED' %}
+                                <span class="badge denied"><span class="dot"></span>{{ log.action }}</span>
+                            {% else %}
+                                <span class="badge action"><span class="dot"></span>{{ log.action }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.resource }}</td>
+                        <td>{{ log.ipAddress }}</td>
+                        <td>
+                            {% if log.success %}
+                                <span class="badge success"><span class="dot"></span>Exitoso</span>
+                            {% else %}
+                                <span class="badge error"><span class="dot"></span>Fallido</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ log.details }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if suspicious|length > 0 %}
+        <div class="suspicious-section">
+            <div class="suspicious-header">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <h3>Accesos sospechosos últimas 24h — {{ suspicious|length }} detectados</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario</th>
+                        <th>Acción</th>
+                        <th>IP</th>
+                        <th>Detalles</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in suspicious %}
+                    <tr>
+                        <td>{{ log.createdAt|date('d/m/Y H:i:s') }}</td>
+                        <td>{{ log.user ? log.user.email : '—' }}</td>
+                        <td><span class="badge denied"><span class="dot"></span>{{ log.action }}</span></td>
+                        <td>{{ log.ipAddress }}</td>
+                        <td>{{ log.details }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+    </main>
 </body>
 </html>

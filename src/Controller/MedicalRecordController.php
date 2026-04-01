@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/medical-records')]
-#[IsGranted('ROLE_NURSE')]
+#[IsGranted('ROLE_USER')]
 class MedicalRecordController extends AbstractController
 {
     public function __construct(

@@ -1,21 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedRecord — Panel Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--navy:#0a1628;--teal:#0d9488;--teal-light:#14b8a6;--blue:#1d4ed8;--gray:#94a3b8;--gray-light:#e2e8f0;--sidebar-w:260px}
+        body{font-family:'DM Sans',sans-serif;background:#f1f5f9;min-height:100vh;display:flex}
+        .sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0}
+        .sidebar-logo{padding:1.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:.875rem}
+        .logo-box{width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center}
+        .logo-box svg{width:22px;height:22px;fill:white}
+        .logo-text{font-family:'DM Serif Display',serif;font-size:1.3rem;color:white}
+        .logo-text span{color:var(--teal-light)}
+        .nav{flex:1;padding:1rem .75rem}
+        .nav-label{color:var(--gray);font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:.5rem .75rem;margin-top:.5rem}
+        .nav-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .875rem;border-radius:8px;color:var(--gray);text-decoration:none;font-size:.875rem;transition:all .2s;margin-bottom:2px}
+        .nav-item:hover{background:rgba(255,255,255,0.06);color:white}
+        .nav-item.active{background:rgba(13,148,136,0.15);color:var(--teal-light)}
+        .nav-item svg{width:18px;height:18px;flex-shrink:0}
+        .nav-logout{padding:1rem .75rem;border-top:1px solid rgba(255,255,255,0.06)}
+        .btn-logout{display:flex;align-items:center;gap:.75rem;width:100%;padding:.7rem .875rem;border-radius:8px;color:#f87171;text-decoration:none;font-size:.875rem;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+        .btn-logout:hover{background:rgba(239,68,68,0.1)}
+        .btn-logout svg{width:18px;height:18px}
+        .main{margin-left:var(--sidebar-w);flex:1;padding:2rem}
+        .page-header{margin-bottom:2rem}
+        .page-header h1{font-family:'DM Serif Display',serif;font-size:1.875rem;color:var(--navy)}
+        .page-header p{color:var(--gray);font-size:.9rem;margin-top:.25rem}
+        .admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
+        .admin-card{background:white;border-radius:16px;padding:2rem;border:1px solid var(--gray-light);box-shadow:0 1px 3px rgba(0,0,0,0.06);text-decoration:none;display:flex;align-items:flex-start;gap:1.25rem;transition:all .2s}
+        .admin-card:hover{border-color:var(--teal);box-shadow:0 4px 15px rgba(13,148,136,0.1);transform:translateY(-2px)}
+        .admin-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .admin-icon svg{width:28px;height:28px}
+        .admin-icon.teal{background:linear-gradient(135deg,var(--teal),#0891b2);color:white}
+        .admin-icon.navy{background:linear-gradient(135deg,var(--navy),#1e40af);color:white}
+        .admin-icon.purple{background:linear-gradient(135deg,#7c3aed,#2563eb);color:white}
+        .admin-icon.red{background:linear-gradient(135deg,#dc2626,#ea580c);color:white}
+        .admin-text h3{color:var(--navy);font-size:1.1rem;font-weight:600;margin-bottom:.35rem}
+        .admin-text p{color:var(--gray);font-size:.85rem;line-height:1.5}
+        .info-banner{background:linear-gradient(135deg,var(--navy),#1e3a5f);border-radius:16px;padding:2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem}
+        .info-banner-icon{width:56px;height:56px;background:rgba(13,148,136,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--teal-light)}
+        .info-banner-icon svg{width:28px;height:28px}
+        .info-banner h2{font-family:'DM Serif Display',serif;color:white;font-size:1.3rem;margin-bottom:.25rem}
+        .info-banner p{color:var(--gray);font-size:.85rem}
+    </style>
 </head>
 <body>
-    <h1>Panel de Administración</h1>
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-box">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+            </div>
+            <span class="logo-text">Med<span>Record</span></span>
+        </div>
+        <nav class="nav">
+            <div class="nav-label">Principal</div>
+            <a href="{{ path('app_dashboard') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                Dashboard
+            </a>
+            <a href="{{ path('medical_record_index') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
+                Registros Médicos
+            </a>
+            <div class="nav-label">Administración</div>
+            <a href="{{ path('admin_index') }}" class="nav-item active">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
+                Panel Admin
+            </a>
+            <a href="{{ path('admin_logs') }}" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                Logs de Auditoría
+            </a>
+        </nav>
+        <div class="nav-logout">
+            <a href="{{ path('app_logout') }}" class="btn-logout">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4a2 2 0 00-2 2v14a2 2 0 002 2h8v-2H4V5z"/></svg>
+                Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+    <main class="main">
+        <div class="page-header">
+            <h1>Panel de Administración</h1>
+            <p>Gestión y supervisión del sistema hospitalario</p>
+        </div>
 
-    <nav>
-        <a href="{{ path('app_dashboard') }}">Dashboard</a> |
-        <a href="{{ path('admin_logs') }}">Ver Logs de Auditoría</a> |
-        <a href="{{ path('medical_record_index') }}">Registros Médicos</a> |
-        <a href="{{ path('app_logout') }}">Cerrar Sesión</a>
-    </nav>
+        <div class="info-banner">
+            <div class="info-banner-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
+            </div>
+            <div>
+                <h2>Sistema Seguro y Activo</h2>
+                <p>Todos los accesos están siendo monitorizados en tiempo real. Cumplimiento RGPD activo.</p>
+            </div>
+        </div>
 
-    <h2>Resumen</h2>
-    <p>Bienvenido al panel de administración.</p>
-    <p>Desde aquí puedes gestionar los logs de auditoría y los registros médicos.</p>
+        <div class="admin-grid">
+            <a href="{{ path('admin_logs') }}" class="admin-card">
+                <div class="admin-icon navy">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                </div>
+                <div class="admin-text">
+                    <h3>Logs de Auditoría</h3>
+                    <p>Visualiza todos los accesos al sistema, intentos fallidos y actividad de usuarios en tiempo real.</p>
+                </div>
+            </a>
+            <a href="{{ path('medical_record_index') }}" class="admin-card">
+                <div class="admin-icon teal">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
+                </div>
+                <div class="admin-text">
+                    <h3>Registros Médicos</h3>
+                    <p>Accede y gestiona todos los historiales clínicos del sistema hospitalario.</p>
+                </div>
+            </a>
+            <div class="admin-card" style="cursor:default">
+                <div class="admin-icon purple">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                </div>
+                <div class="admin-text">
+                    <h3>Usuarios del Sistema</h3>
+                    <p>4 usuarios activos: 1 Admin, 1 Doctor, 1 Enfermera, 1 Recepción.</p>
+                </div>
+            </div>
+            <div class="admin-card" style="cursor:default">
+                <div class="admin-icon red">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <div class="admin-text">
+                    <h3>Seguridad Activa</h3>
+                    <p>Rate limiting, bloqueo de cuentas y CSRF habilitados. Datos cifrados con JWT.</p>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
