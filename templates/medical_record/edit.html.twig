@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Registro Médico</title>
+</head>
+<body>
+    <h1>Editar Registro #{{ record.id }}</h1>
+
+    <form method="post">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('edit' ~ record.id) }}">
+
+        <label>Diagnóstico:
+            <textarea name="diagnosis">{{ record.diagnosis }}</textarea>
+        </label>
+
+        <label>Tratamiento:
+            <textarea name="treatment">{{ record.treatment }}</textarea>
+        </label>
+
+        <button type="submit">Guardar</button>
+        <a href="{{ path('medical_record_show', {id: record.id}) }}">Cancelar</a>
+    </form>
+</body>
+</html>
