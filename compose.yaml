@@ -5,7 +5,7 @@ services:
       - "8000:8000"
     environment:
       APP_ENV: dev
-      DATABASE_URL: "mysql://symfony:symfony@database:3306/medical_records?serverVersion=8.0&charset=utf8mb4"
+      DATABASE_URL: "postgresql://symfony:symfony@database:5432/medical_records?serverVersion=16&charset=utf8"
     depends_on:
       database:
         condition: service_healthy
@@ -13,20 +13,19 @@ services:
       - .:/app
 
   database:
-    image: mysql:8.0
+    image: postgres:16
     environment:
-      MYSQL_DATABASE: medical_records
-      MYSQL_USER: symfony
-      MYSQL_PASSWORD: symfony
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_DB: medical_records
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
     ports:
-      - "3307:3306"
+      - "5432:5432"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U symfony"]
       timeout: 5s
       retries: 10
     volumes:
-      - database_data:/var/lib/mysql
+      - database_data:/var/lib/postgresql/data
 
 volumes:
   database_data:
