@@ -21,7 +21,7 @@ a hospital records system.
 
 This project exists specifically to explore application security in Symfony:
 
-- **Role-Based Access Control (RBAC)** — hierarchical roles: `ADMIN > DOCTOR > NURSE > RECEPTIONIST`
+- **Role-Based Access Control (RBAC)** — hierarchical roles: ADMIN > DOCTOR > NURSE > RECEPTIONIST
 - **Symfony Voters** — granular, per-record access control based on role and ownership
 - **JWT Authentication** — stateless auth for the REST API (1-hour token lifetime)
 - **Rate Limiting** — max 5 login attempts every 15 minutes
@@ -38,15 +38,13 @@ PHP 8.3 · Symfony 7 · Doctrine ORM · MySQL 8.0 · Lexik JWT Bundle · Docker
 
 The whole app (PHP + MySQL) runs with a single command via Docker:
 
-```bash
-git clone https://github.com/SoniaDL90/Medical_records.git
-cd Medical_records
-docker compose up -d --build
-docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
-docker compose exec app php bin/console doctrine:fixtures:load --no-interaction
-```
+    git clone https://github.com/SoniaDL90/Medical_records.git
+    cd Medical_records
+    docker compose up -d --build
+    docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+    docker compose exec app php bin/console doctrine:fixtures:load --no-interaction
 
-Then open **http://localhost:8000/login** in your browser.
+Then open http://localhost:8000/login in your browser.
 
 ## 👤 Test Users
 
@@ -59,28 +57,10 @@ Then open **http://localhost:8000/login** in your browser.
 
 ## 📡 REST API
 
-**Get a token:**
-```bash
-curl -X POST http://127.0.0.1:8000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin@hospital.com","password":"Password123!"}'
-```
+Get a token:
 
-**Use the token:**
-```bash
-curl http://127.0.0.1:8000/api/medical-records/ \
-  -H "Authorization: Bearer <token>"
-```
+    curl -X POST http://127.0.0.1:8000/api/login -H "Content-Type: application/json" -d '{"username":"admin@hospital.com","password":"Password123!"}'
 
-**Main URLs:**
-- Web login: `http://127.0.0.1:8000/login`
-- Admin panel: `http://127.0.0.1:8000/admin`
-- Audit logs: `http://127.0.0.1:8000/admin/logs`
+Use the token:
 
-## 📝 What I Learned
-
-Building this project helped me understand how to design layered authorization
-(RBAC combined with Symfony Voters for per-record checks), implement stateless
-JWT authentication for an API, and add defensive measures against brute-force
-attacks — rate limiting, account lockout and audit logging.
-EOF
+    curl http://127.0.0.1:8000/api/medical-records/ -H "Authorization:
