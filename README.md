@@ -1,3 +1,4 @@
+cat > README.md << 'EOF'
 # 🏥 Medical Records Management System
 
 ![Symfony](https://img.shields.io/badge/Symfony-7-000000?logo=symfony)
@@ -9,6 +10,12 @@
 A Symfony 7 REST API built to practise secure application design — role-based
 access control, JWT authentication, rate limiting and full audit logging for
 a hospital records system.
+
+## 📸 Screenshots
+
+| Login | Admin Dashboard | Audit Logs |
+|---|---|---|
+| ![Login](docs/screenshots/login.png) | ![Dashboard](docs/screenshots/dashboard.png) | ![Audit logs](docs/screenshots/audit-logs.png) |
 
 ## 🔐 Security Features
 
@@ -29,32 +36,17 @@ PHP 8.3 · Symfony 7 · Doctrine ORM · MySQL 8.0 · Lexik JWT Bundle · Docker
 
 ## 🚀 Getting Started
 
-### Requirements
-- PHP 8.2+
-- Composer 2.x
-- Symfony CLI
-- MySQL 8.0+
-
-### Installation
+The whole app (PHP + MySQL) runs with a single command via Docker:
 
 ```bash
 git clone https://github.com/SoniaDL90/Medical_records.git
 cd Medical_records
-composer install
+docker compose up -d --build
+docker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+docker compose exec app php bin/console doctrine:fixtures:load --no-interaction
 ```
 
-Configure your database in `.env.local` (see `.env.example` for the format):
-```
-DATABASE_URL="mysql://user:password@127.0.0.1:3306/medical_records"
-```
-
-```bash
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
-php bin/console doctrine:fixtures:load
-php bin/console lexik:jwt:generate-keypair
-symfony server:start
-```
+Then open **http://localhost:8000/login** in your browser.
 
 ## 👤 Test Users
 
@@ -91,3 +83,4 @@ Building this project helped me understand how to design layered authorization
 (RBAC combined with Symfony Voters for per-record checks), implement stateless
 JWT authentication for an API, and add defensive measures against brute-force
 attacks — rate limiting, account lockout and audit logging.
+EOF
