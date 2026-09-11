@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedRecord — Logs de Auditoría</title>
+    <title>MedRecord — Audit Logs</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -76,36 +76,36 @@
             <span class="logo-text">Med<span>Record</span></span>
         </div>
         <nav class="nav">
-            <div class="nav-label">Principal</div>
+            <div class="nav-label">Main</div>
             <a href="{{ path('app_dashboard') }}" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
                 Dashboard
             </a>
             <a href="{{ path('medical_record_index') }}" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
-                Registros Médicos
+                Medical Records
             </a>
-            <div class="nav-label">Administración</div>
+            <div class="nav-label">Administration</div>
             <a href="{{ path('admin_index') }}" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
-                Panel Admin
+                Admin Panel
             </a>
             <a href="{{ path('admin_logs') }}" class="nav-item active">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                Logs de Auditoría
+                Audit Logs
             </a>
         </nav>
         <div class="nav-logout">
             <a href="{{ path('app_logout') }}" class="btn-logout">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4a2 2 0 00-2 2v14a2 2 0 002 2h8v-2H4V5z"/></svg>
-                Cerrar Sesión
+                Log Out
             </a>
         </div>
     </aside>
     <main class="main">
         <div class="page-header">
-            <h1>Logs de Auditoría</h1>
-            <p>Registro completo de accesos y actividad del sistema</p>
+            <h1>Audit Logs</h1>
+            <p>Full log of system access and activity</p>
         </div>
 
         <div class="stats-row">
@@ -115,7 +115,7 @@
                 </div>
                 <div>
                     <div class="stat-value">{{ logs|length }}</div>
-                    <div class="stat-label">Total accesos</div>
+                    <div class="stat-label">Total access events</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -124,7 +124,7 @@
                 </div>
                 <div>
                     <div class="stat-value">{{ failedLogins }}</div>
-                    <div class="stat-label">Fallos últimas 24h</div>
+                    <div class="stat-label">Failures last 24h</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -133,53 +133,53 @@
                 </div>
                 <div>
                     <div class="stat-value">{{ suspicious|length }}</div>
-                    <div class="stat-label">Accesos sospechosos 24h</div>
+                    <div class="stat-label">Suspicious access 24h</div>
                 </div>
             </div>
         </div>
 
         <div class="filter-bar">
             <form method="GET">
-                <label>Acción:</label>
+                <label>Action:</label>
                 <select name="action">
-                    <option value="">Todas</option>
-                    <option value="LOGIN_SUCCESS" {% if app.request.get('action') == 'LOGIN_SUCCESS' %}selected{% endif %}>Login exitoso</option>
-                    <option value="LOGIN_FAILED" {% if app.request.get('action') == 'LOGIN_FAILED' %}selected{% endif %}>Login fallido</option>
+                    <option value="">All</option>
+                    <option value="LOGIN_SUCCESS" {% if app.request.get('action') == 'LOGIN_SUCCESS' %}selected{% endif %}>Successful login</option>
+                    <option value="LOGIN_FAILED" {% if app.request.get('action') == 'LOGIN_FAILED' %}selected{% endif %}>Failed login</option>
                     <option value="API_READ" {% if app.request.get('action') == 'API_READ' %}selected{% endif %}>API Read</option>
-                    <option value="ACCESS_DENIED" {% if app.request.get('action') == 'ACCESS_DENIED' %}selected{% endif %}>Acceso denegado</option>
+                    <option value="ACCESS_DENIED" {% if app.request.get('action') == 'ACCESS_DENIED' %}selected{% endif %}>Access denied</option>
                 </select>
-                <label>Resultado:</label>
+                <label>Result:</label>
                 <select name="success">
-                    <option value="">Todos</option>
-                    <option value="1" {% if app.request.get('success') == '1' %}selected{% endif %}>Exitoso</option>
-                    <option value="0" {% if app.request.get('success') == '0' %}selected{% endif %}>Fallido</option>
+                    <option value="">All</option>
+                    <option value="1" {% if app.request.get('success') == '1' %}selected{% endif %}>Successful</option>
+                    <option value="0" {% if app.request.get('success') == '0' %}selected{% endif %}>Failed</option>
                 </select>
-                <label>Usuario:</label>
+                <label>User:</label>
                 <input type="text" name="user" value="{{ app.request.get('user') }}" placeholder="email...">
-                <label>Desde:</label>
+                <label>From:</label>
                 <input type="date" name="date_from" value="{{ app.request.get('date_from') }}">
-                <label>Hasta:</label>
+                <label>To:</label>
                 <input type="date" name="date_to" value="{{ app.request.get('date_to') }}">
-                <button type="submit" class="btn-filter">Filtrar</button>
-                <a href="{{ path('admin_logs') }}" class="btn-clear">Limpiar</a>
+                <button type="submit" class="btn-filter">Filter</button>
+                <a href="{{ path('admin_logs') }}" class="btn-clear">Clear</a>
             </form>
         </div>
 
         <div class="table-card">
             <div class="table-header">
-                <h3>Últimos 100 accesos</h3>
-                <span>{{ logs|length }} registros</span>
+                <h3>Last 100 access events</h3>
+                <span>{{ logs|length }} records</span>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Usuario</th>
-                        <th>Acción</th>
-                        <th>Recurso</th>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Resource</th>
                         <th>IP</th>
-                        <th>Resultado</th>
-                        <th>Detalles</th>
+                        <th>Result</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -198,9 +198,9 @@
                         <td>{{ log.ipAddress }}</td>
                         <td>
                             {% if log.success %}
-                                <span class="badge success"><span class="dot"></span>Exitoso</span>
+                                <span class="badge success"><span class="dot"></span>Successful</span>
                             {% else %}
-                                <span class="badge error"><span class="dot"></span>Fallido</span>
+                                <span class="badge error"><span class="dot"></span>Failed</span>
                             {% endif %}
                         </td>
                         <td>{{ log.details }}</td>
@@ -214,16 +214,16 @@
         <div class="suspicious-section">
             <div class="suspicious-header">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                <h3>Accesos sospechosos últimas 24h — {{ suspicious|length }} detectados</h3>
+                <h3>Suspicious access last 24h — {{ suspicious|length }} detected</h3>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Usuario</th>
-                        <th>Acción</th>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Action</th>
                         <th>IP</th>
-                        <th>Detalles</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>

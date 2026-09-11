@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -72,38 +72,38 @@
             </div>
         </div>
         <nav class="nav">
-            <div class="nav-label">Principal</div>
+            <div class="nav-label">Main</div>
             <a href="{{ path('app_dashboard') }}" class="nav-item active">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
                 Dashboard
             </a>
             <a href="{{ path('medical_record_index') }}" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
-                Registros Médicos
+                Medical Records
             </a>
             {% if is_granted('ROLE_ADMIN') %}
-            <div class="nav-label">Administración</div>
+            <div class="nav-label">Administration</div>
             <a href="{{ path('admin_index') }}" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
-                Panel Admin
+                Admin Panel
             </a>
             <a href="{{ path('admin_logs') }}" class="nav-item">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                Logs de Auditoría
+                Audit Logs
             </a>
             {% endif %}
         </nav>
         <div class="nav-logout">
             <a href="{{ path('app_logout') }}" class="btn-logout">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4a2 2 0 00-2 2v14a2 2 0 002 2h8v-2H4V5z"/></svg>
-                Cerrar Sesión
+                Log Out
             </a>
         </div>
     </aside>
     <main class="main">
         <div class="page-header">
-            <h1>Bienvenido, {{ app.user.name }}</h1>
-            <p>Panel de control del Sistema de Registros Médicos</p>
+            <h1>Welcome, {{ app.user.name }}</h1>
+            <p>Medical Records System control panel</p>
             <div class="role-badge">{{ app.user.roles|first }}</div>
         </div>
         <div class="stats-grid">
@@ -112,28 +112,28 @@
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
                 </div>
                 <div class="stat-value">—</div>
-                <div class="stat-label">Registros médicos</div>
+                <div class="stat-label">Medical records</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon blue">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                 </div>
                 <div class="stat-value">4</div>
-                <div class="stat-label">Usuarios activos</div>
+                <div class="stat-label">Active users</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon purple">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                 </div>
                 <div class="stat-value">—</div>
-                <div class="stat-label">Pacientes</div>
+                <div class="stat-label">Patients</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon orange">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
                 </div>
                 <div class="stat-value">✓</div>
-                <div class="stat-label">Sistema seguro</div>
+                <div class="stat-label">Secure system</div>
             </div>
         </div>
         <div class="quick-grid">
@@ -142,8 +142,8 @@
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
                 </div>
                 <div class="quick-text">
-                    <h3>Registros Médicos</h3>
-                    <p>Ver y gestionar historiales clínicos</p>
+                    <h3>Medical Records</h3>
+                    <p>View and manage clinical records</p>
                 </div>
             </a>
             {% if is_granted('ROLE_ADMIN') %}
@@ -152,8 +152,8 @@
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-4z"/></svg>
                 </div>
                 <div class="quick-text">
-                    <h3>Logs de Auditoría</h3>
-                    <p>Supervisar accesos y actividad</p>
+                    <h3>Audit Logs</h3>
+                    <p>Monitor access and activity</p>
                 </div>
             </a>
             {% endif %}
