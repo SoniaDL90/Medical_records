@@ -1,94 +1,93 @@
-# Sistema de Gestión de Registros Médicos
+# 🏥 Medical Records Management System
 
-Práctica de seguridad en Symfony 7 - Sistema hospitalario con control de acceso, roles y auditoría.
+![Symfony](https://img.shields.io/badge/Symfony-7-000000?logo=symfony)
+![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql)
+![Auth](https://img.shields.io/badge/Auth-JWT-black)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)
 
-## Requisitos
+A Symfony 7 REST API built to practise secure application design — role-based
+access control, JWT authentication, rate limiting and full audit logging for
+a hospital records system.
 
+## 🔐 Security Features
+
+This project exists specifically to explore application security in Symfony:
+
+- **Role-Based Access Control (RBAC)** — hierarchical roles: `ADMIN > DOCTOR > NURSE > RECEPTIONIST`
+- **Symfony Voters** — granular, per-record access control based on role and ownership
+- **JWT Authentication** — stateless auth for the REST API (1-hour token lifetime)
+- **Rate Limiting** — max 5 login attempts every 15 minutes
+- **Account Lockout** — account locked after 5 consecutive failed logins
+- **Audit Logging** — every access logged to the database with IP, user and timestamp
+- **CSRF Protection** — on all edit/delete forms
+- **Suspicious Access Monitoring** — admin panel showing failed access attempts in the last 24h
+
+## 🛠️ Tech Stack
+
+PHP 8.3 · Symfony 7 · Doctrine ORM · MySQL 8.0 · Lexik JWT Bundle · Docker
+
+## 🚀 Getting Started
+
+### Requirements
 - PHP 8.2+
 - Composer 2.x
 - Symfony CLI
 - MySQL 8.0+
 
-## Instalación
+### Installation
 
-### 1. Clonar el repositorio
 ```bash
 git clone https://github.com/SoniaDL90/Medical_records.git
 cd Medical_records
-```
-
-### 2. Instalar dependencias
-```bash
 composer install
 ```
 
-### 3. Configurar base de datos
-
-Editar el archivo `.env` con tus credenciales:
+Configure your database in `.env.local` (see `.env.example` for the format):
 ```
-DATABASE_URL="mysql://usuario:contraseña@127.0.0.1:3306/medical_records"
+DATABASE_URL="mysql://user:password@127.0.0.1:3306/medical_records"
 ```
 
-### 4. Crear la base de datos y ejecutar migraciones
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
-```
-
-### 5. Cargar usuarios de prueba
-```bash
 php bin/console doctrine:fixtures:load
-```
-
-### 6. Generar claves JWT
-```bash
 php bin/console lexik:jwt:generate-keypair
-```
-
-### 7. Arrancar el servidor
-```bash
 symfony server:start
 ```
 
-## Usuarios de prueba
+## 👤 Test Users
 
-| Email | Contraseña | Rol | Permisos |
+| Email | Password | Role | Permissions |
 |-------|-----------|-----|---------|
-| admin@hospital.com | Password123! | ROLE_ADMIN | Leer, editar y eliminar todos los registros |
-| doctor@hospital.com | Password123! | ROLE_DOCTOR | Leer y editar sus propios pacientes |
-| nurse@hospital.com | Password123! | ROLE_NURSE | Leer todos los registros, editar limitado |
-| reception@hospital.com | Password123! | ROLE_RECEPTIONIST | Solo datos básicos del paciente |
+| admin@hospital.com | Password123! | ROLE_ADMIN | Read, edit and delete all records |
+| doctor@hospital.com | Password123! | ROLE_DOCTOR | Read and edit their own patients |
+| nurse@hospital.com | Password123! | ROLE_NURSE | Read all records, limited editing |
+| reception@hospital.com | Password123! | ROLE_RECEPTIONIST | Basic patient data only |
 
-## URLs principales
+## 📡 REST API
 
-- Login web: http://127.0.0.1:8000/login
-- Panel admin: http://127.0.0.1:8000/admin
-- Logs de auditoría: http://127.0.0.1:8000/admin/logs
-- API login: POST http://127.0.0.1:8000/api/login
-- API registros: GET http://127.0.0.1:8000/api/medical-records/
-
-## API REST con JWT
-
-### Obtener token
+**Get a token:**
 ```bash
 curl -X POST http://127.0.0.1:8000/api/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin@hospital.com","password":"Password123!"}'
 ```
 
-### Usar el token
+**Use the token:**
 ```bash
 curl http://127.0.0.1:8000/api/medical-records/ \
   -H "Authorization: Bearer <token>"
 ```
 
-## Decisiones de seguridad
+**Main URLs:**
+- Web login: `http://127.0.0.1:8000/login`
+- Admin panel: `http://127.0.0.1:8000/admin`
+- Audit logs: `http://127.0.0.1:8000/admin/logs`
 
-- **RBAC**: Sistema de roles jerárquico (ADMIN > DOCTOR > NURSE > RECEPTIONIST)
-- **Voter**: Control granular de acceso a registros individuales por rol
-- **JWT**: Autenticación stateless para la API REST (token válido 1 hora)
-- **Rate Limiting**: Máximo 5 intentos de login cada 15 minutos
-- **Auditoría**: Todos los accesos quedan registrados en la base de datos con IP, usuario y timestamp
-- **CSRF**: Protección en formularios de edición y borrado
-- **Bloqueo**: Cuenta bloqueada tras 5 intentos fallidos consecutivos
-- **Accesos sospechosos**: Panel de monitorización de accesos fallidos últimas 24h
+## 📝 What I Learned
+
+Building this project helped me understand how to design layered authorization
+(RBAC combined with Symfony Voters for per-record checks), implement stateless
+JWT authentication for an API, and add defensive measures against brute-force
+attacks — rate limiting, account lockout and audit logging.
